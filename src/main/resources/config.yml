@@ -1,0 +1,59 @@
+language: en
+sell:
+  close-delay-ticks: 3
+  success-message: '&#95FF00+$%earn%'
+  success-actionbar: '&#95FF00+$%earn%'
+  lore-format: '&7Worth: &a$%prices%'
+  blacklist-sell:
+    - BEDROCK
+    - BARREL
+    - SPAWNER
+worth:
+  command-message: '&#EAFF001 %item% &7is worth &a$%prices%'
+prices:
+  auto-import-missing-vanilla-items: true
+  default-import-price: 1.0
+sellmulti:
+  required-per-level: 50000
+  multiplier-step: 0.1
+  detail-levels: 28
+  categories:
+    crops: {}
+    ores: {}
+    mob_drops: {}
+    natural_items: {}
+    armor_and_tools: {}
+    fish: {}
+    enchanted_books: {}
+    potions: {}
+    blocks: {}
+database:
+  type: sqlite
+  sqlite:
+    file: marisworth.db
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    database: marisworth
+    username: root
+    password: change-me
+    properties:
+      useSSL: false
+      cachePrepStmts: true
+      prepStmtCacheSize: 250
+      prepStmtCacheSqlLimit: 2048
+  pool:
+    maximum-pool-size: 8
+    minimum-idle: 1
+    connection-timeout: 10000
+packet-lore:
+  enabled: true
+  skip-creative: true
+  supported-inventories:
+    - CHEST
+    - LARGE_CHEST
+    - ENDER_CHEST
+    - CRAFTING
+    - PLAYER
+    - SHULKER_BOX
+    - BARREL

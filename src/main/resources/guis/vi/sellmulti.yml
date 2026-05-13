@@ -1,0 +1,122 @@
+title: '&8ꜱᴇʟʟ ᴍᴜʟᴛɪᴘʟɪᴇʀ'
+labels:
+  max: 'ᴍᴀx'
+categories:
+  crops:
+    material: WHEAT
+    short-name: 'ᴄʀᴏᴘꜱ'
+    name: '&#00F986ᴄʀᴏᴘꜱ'
+    lore:
+      - '&7Sell crops and farming materials to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  ores:
+    material: DIAMOND
+    short-name: 'ᴏʀᴇꜱ'
+    name: '&#00F986ᴏʀᴇꜱ'
+    lore:
+      - '&7Sell ores and mining materials to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  mob_drops:
+    material: BONE
+    short-name: 'ᴍᴏʙ ᴅʀᴏᴘꜱ'
+    name: '&#00F986ᴍᴏʙ ᴅʀᴏᴘꜱ'
+    lore:
+      - '&7Sell mob drops and loot to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  natural_items:
+    material: AZALEA
+    short-name: 'ɴᴀᴛᴜʀᴀʟ ɪᴛᴇᴍꜱ'
+    name: '&#00F986ɴᴀᴛᴜʀᴀʟ ɪᴛᴇᴍꜱ'
+    lore:
+      - '&7Sell natural materials and trees to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  armor_and_tools:
+    material: NETHERITE_HELMET
+    short-name: 'ᴀʀᴍᴏʀ ᴀɴᴅ ᴛᴏᴏʟꜱ'
+    name: '&#00F986ᴀʀᴍᴏʀ ᴀɴᴅ ᴛᴏᴏʟꜱ'
+    lore:
+      - '&7Sell armor and tools to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  fish:
+    material: TROPICAL_FISH
+    short-name: 'ꜰɪꜱʜ'
+    name: '&#00F986ꜰɪꜱʜ'
+    lore:
+      - '&7Sell fish and other fishing loot to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  enchanted_books:
+    material: ENCHANTED_BOOK
+    short-name: 'ᴇɴᴄʜᴀɴᴛᴇᴅ ʙᴏᴏᴋꜱ'
+    name: '&#00F986ᴇɴᴄʜᴀɴᴛᴇᴅ ʙᴏᴏᴋꜱ'
+    lore:
+      - '&7Sell books and enchanted books to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  potions:
+    material: BREWING_STAND
+    short-name: 'ᴘᴏᴛɪᴏɴꜱ'
+    name: '&#00F986ᴘᴏᴛɪᴏɴꜱ'
+    lore:
+      - '&7Sell brewing and brewing materials to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+  blocks:
+    material: BRICKS
+    short-name: 'ʙʟᴏᴄᴋꜱ'
+    name: '&#00F986ʙʟᴏᴄᴋꜱ'
+    lore:
+      - '&7Sell blocks and placeable items to'
+      - '&7upgrade your sell multiplier!'
+    progress-line: '&7Progress to &f%next_progress%'
+    percent-line: '&f%bar% &#00FFA1%progress%%'
+    current-line: ''
+detail:
+  title: '&8%category% ᴘʀᴏɢʀᴇꜱꜱ'
+  back:
+    material: RED_STAINED_GLASS_PANE
+    name: '&#00FFA1BACK'
+    lore:
+      - '&fClick to go back'
+  background:
+    gray-material: GRAY_STAINED_GLASS_PANE
+    gray-name: ' '
+    white-material: WHITE_STAINED_GLASS_PANE
+    white-name: ' '
+  status:
+    complete:
+      material: WHITE_STAINED_GLASS_PANE
+      name: '&#00FFA1ᴄᴏᴍᴘʟᴇᴛᴇ'
+      text-color: '&#00FFA1'
+    working:
+      material: YELLOW_STAINED_GLASS_PANE
+      name: '&fᴡᴏʀᴋɪɴɢ'
+      text-color: '&f'
+    incomplete:
+      material: RED_STAINED_GLASS_PANE
+      name: '&fɪɴᴄᴏᴍᴘʟᴇᴛᴇ'
+      text-color: '&f'
+  entry:
+    multiplier-line: '&f%bar% &f%multiplier% &f%progress%%'
+    amount-line: '&f$%current%/$%required%'

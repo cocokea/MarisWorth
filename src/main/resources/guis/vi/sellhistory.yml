@@ -1,0 +1,23 @@
+title: '&8sᴇʟʟ ʜɪsᴛᴏʀʏ &7(Page %page%)'
+entry:
+  total-price: '&fTotal price: &#00FFA1$%price%'
+  total-amount: '&fTotal Amount: %amount%'
+labels:
+  sort-by-name: 'By name'
+  sort-by-amount: 'By amount'
+back:
+  material: ARROW
+  name: '&#00FFA1ʙᴀᴄᴋ'
+  lore:
+    - '&fClick to go to the previous page'
+next:
+  material: ARROW
+  name: '&#00FFA1ɴᴇxᴛ'
+  lore:
+    - '&fClick to go to the next page'
+sort:
+  material: ANVIL
+  name: '&#00FFA1sᴏʀᴛ'
+  lore:
+    - '&fClick to sort'
+    - '&7Current: %current%'

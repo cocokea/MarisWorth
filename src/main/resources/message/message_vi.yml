@@ -1,0 +1,8 @@
+prefix: '&8[&#00FFA1MarisWorth&8] '
+no-economy: '%prefix%&cKhong tim thay economy provider cua Vault.'
+no-permission: '%prefix%&cBan khong co quyen.'
+player-only: '%prefix%&cChi nguoi choi moi dung duoc lenh nay.'
+reloaded: '%prefix%&aDa tai lai tep.'
+no-price: '%prefix%&cVat pham nay khong co gia.'
+no-items-to-sell: '%prefix%&cBan khong co vat pham de ban.'
+sell-blacklisted: '%prefix%&cVat pham nam trong blacklist khong the ban. Plugin da tra lai cho ban.'

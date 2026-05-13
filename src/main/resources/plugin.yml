@@ -1,0 +1,27 @@
+name: MarisWorth
+version: '1.0'
+main: com.maris7.worth.MarisWorthPlugin
+api-version: '1.21'
+folia-supported: true
+load: POSTWORLD
+description: MarisWorth sell and worth plugin
+depend: [Vault]
+softdepend: [PlaceholderAPI, MarisSettings]
+libraries:
+  - com.zaxxer:HikariCP:7.0.2
+  - org.xerial:sqlite-jdbc:3.53.0.0
+  - com.mysql:mysql-connector-j:9.7.0
+
+commands:
+  sell:
+    description: Open the sell menu.
+    usage: /sell
+  worth:
+    description: Open worth menu or check an item's worth.
+    usage: /worth [item]
+  sellhistory:
+    description: Open sell history.
+    usage: /sellhistory
+  sellmulti:
+    description: Open multi-sell menu.
+    usage: /sellmulti

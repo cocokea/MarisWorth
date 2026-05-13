@@ -1,0 +1,8 @@
+prefix: '&8[&#00FFA1MarisWorth&8] '
+no-economy: '%prefix%&cVault economy provider was not found.'
+no-permission: '%prefix%&cYou do not have permission.'
+player-only: '%prefix%&cOnly players can use this command.'
+reloaded: '%prefix%&aFiles reloaded.'
+no-price: '%prefix%&cThat item does not have a worth price.'
+no-items-to-sell: '%prefix%&cYou have no items to sell.'
+sell-blacklisted: '%prefix%&cBlacklisted items cannot be sold. They were returned to you.'

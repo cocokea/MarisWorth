@@ -1,0 +1,45 @@
+title: '&8ɪᴛᴇᴍ ᴘʀɪᴄᴇꜱ &7(Page %page%)'
+item-lore:
+  default: '&fPrice: &#00FFA1$%price%'
+  enchanted: '&fPrice: &#00FFA1$%price% &7(enchanted)'
+labels:
+  sort-highest: 'Highest Price'
+  sort-lowest: 'Lowest Price'
+  sort-name: 'By Name'
+  filter-all: 'All'
+  filter-blocks: 'Blocks'
+  filter-tools: 'Tools'
+  filter-food: 'Food'
+  filter-combat: 'Combat'
+  filter-potions: 'Potions'
+  filter-books: 'Books'
+  filter-ingredients: 'Ingredients'
+  filter-utilities: 'Utilities'
+back:
+  material: ARROW
+  name: '&#00FFA1ʙᴀᴄᴋ'
+  lore:
+    - '&fClick to go to the previous page'
+next:
+  material: ARROW
+  name: '&#00FFA1ɴᴇxᴛ'
+  lore:
+    - '&fClick to go to the next page'
+filter:
+  material: CAULDRON
+  name: '&#00FFA1ꜰɪʟᴛᴇʀ'
+  lore: []
+  header: ''
+  active-line: '&#00FFA1• %name%'
+  inactive-line: '&f• %name%'
+refresh:
+  material: ANVIL
+  name: '&#00FFA1ɪᴛᴇᴍ ᴘʀɪᴄᴇꜱ'
+  lore:
+    - '&fClick to refresh'
+sort:
+  material: HOPPER
+  name: '&#00FFA1ꜱᴏʀᴛ'
+  lore: []
+  active-line: '&#00FFA1• %name%'
+  inactive-line: '&f• %name%'
