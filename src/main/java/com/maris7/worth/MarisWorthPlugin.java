@@ -47,6 +47,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -73,6 +74,7 @@ public final class MarisWorthPlugin extends JavaPlugin {
     private GuiController guiController;
     private SettingsHook settingsHook;
     private NmsWorthPacketListener nmsWorthPacketListener;
+    private NamespacedKey worthLoreMarkerKey;
 
     @Override
     public void onEnable() {
@@ -85,6 +87,7 @@ ensureFiles();
         this.messages = loadMessages();
         this.schedulerAdapter = new SchedulerAdapter(this);
         this.settingsHook = new SettingsHook(this);
+        this.worthLoreMarkerKey = new NamespacedKey(this, "worth_lore_injected");
         this.priceRegistry = new PriceRegistry(this);
         this.priceRegistry.reload();
         this.worthService = new WorthService(priceRegistry);
@@ -625,7 +628,7 @@ ensureFiles();
         }
 
         List<String> lore = meta.hasLore() && meta.getLore() != null ? new ArrayList<>(meta.getLore()) : new ArrayList<>();
-        lore.removeIf(line -> ColorUtil.strip(line).startsWith("Worth:"));
+        clearInjectedWorthLore(meta, lore);
 
         ItemStack pricingView = clone.clone();
         org.bukkit.inventory.meta.ItemMeta pricingMeta = pricingView.getItemMeta();
@@ -646,8 +649,49 @@ ensureFiles();
             .replace("%prices%", NumberFormatUtil.format(worth));
         lore.add(ColorUtil.noItalic(worthLine));
         meta.setLore(lore);
+        meta.getPersistentDataContainer().set(worthLoreMarkerKey, PersistentDataType.BYTE, (byte) 1);
         clone.setItemMeta(meta);
         return clone;
+    }
+
+    private void clearInjectedWorthLore(org.bukkit.inventory.meta.ItemMeta meta, List<String> lore) {
+        boolean marked = meta.getPersistentDataContainer().has(worthLoreMarkerKey, PersistentDataType.BYTE);
+        if (marked) {
+            String expected = ColorUtil.strip(
+                getConfig().getString("sell.lore-format", "&7Worth: &a$%prices%").replace("%prices%", "")
+            );
+            lore.removeIf(line -> isInjectedWorthLine(line, expected));
+            meta.getPersistentDataContainer().remove(worthLoreMarkerKey);
+            return;
+        }
+
+        String format = getConfig().getString("sell.lore-format", "&7Worth: &a$%prices%");
+        int placeholderIndex = format.indexOf("%prices%");
+        String strippedPrefix = placeholderIndex >= 0 ? ColorUtil.strip(format.substring(0, placeholderIndex)).trim() : ColorUtil.strip(format).trim();
+        String strippedSuffix = placeholderIndex >= 0 ? ColorUtil.strip(format.substring(placeholderIndex + "%prices%".length())).trim() : "";
+        lore.removeIf(line -> matchesLegacyWorthLine(line, strippedPrefix, strippedSuffix));
+    }
+
+    private boolean isInjectedWorthLine(String line, String expectedWithoutPrice) {
+        String strippedLine = ColorUtil.strip(line).trim();
+        String strippedExpected = expectedWithoutPrice == null ? "" : expectedWithoutPrice.trim();
+        if (!strippedExpected.isBlank() && strippedLine.startsWith(strippedExpected)) {
+            return true;
+        }
+        return strippedLine.startsWith("Worth:");
+    }
+
+    private boolean matchesLegacyWorthLine(String line, String strippedPrefix, String strippedSuffix) {
+        String strippedLine = ColorUtil.strip(line).trim();
+        if (strippedLine.startsWith("Worth:")) {
+            return true;
+        }
+        if (strippedPrefix.isBlank() && strippedSuffix.isBlank()) {
+            return false;
+        }
+        boolean prefixMatches = strippedPrefix.isBlank() || strippedLine.startsWith(strippedPrefix);
+        boolean suffixMatches = strippedSuffix.isBlank() || strippedLine.endsWith(strippedSuffix);
+        return prefixMatches && suffixMatches;
     }
 
     private void refreshTopStatsAsync() {

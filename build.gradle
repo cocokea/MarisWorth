@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.maris7'
-version = '1.0'
+version = '1.1'
 
 repositories {
     maven { url = uri('https://repo.papermc.io/repository/maven-public/') }

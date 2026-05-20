@@ -1,6 +1,11 @@
 package com.maris7.worth.listener;
 
 import com.maris7.worth.MarisWorthPlugin;
+import com.maris7.worth.gui.GuiController.MultiDetailHolder;
+import com.maris7.worth.gui.GuiController.MultiHolder;
+import com.maris7.worth.gui.GuiController.SellHistoryHolder;
+import com.maris7.worth.gui.GuiController.WorthHolder;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,6 +33,9 @@ public final class InventoryRefreshListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player player) {
+            if (shouldSkipGuiRefresh(event.getView().getTopInventory().getHolder())) {
+                return;
+            }
             refresh(player);
         }
     }
@@ -35,6 +43,9 @@ public final class InventoryRefreshListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDrag(InventoryDragEvent event) {
         if (event.getWhoClicked() instanceof Player player) {
+            if (shouldSkipGuiRefresh(event.getView().getTopInventory().getHolder())) {
+                return;
+            }
             refresh(player);
         }
     }
@@ -112,10 +123,14 @@ public final class InventoryRefreshListener implements Listener {
                 return;
             }
             plugin.updateInjectTopInventory(player);
-            if (plugin.isCreativeMode(playerId) && plugin.getConfig().getBoolean("packet-lore.skip-creative", true)) {
-                return;
-            }
             player.updateInventory();
         }, () -> pendingRefreshes.remove(playerId));
+    }
+
+    private boolean shouldSkipGuiRefresh(InventoryHolder holder) {
+        return holder instanceof WorthHolder
+            || holder instanceof SellHistoryHolder
+            || holder instanceof MultiHolder
+            || holder instanceof MultiDetailHolder;
     }
 }

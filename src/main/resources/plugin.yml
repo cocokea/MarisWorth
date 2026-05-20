@@ -1,5 +1,5 @@
 name: MarisWorth
-version: '1.0'
+version: '1.1'
 main: com.maris7.worth.MarisWorthPlugin
 api-version: '1.21'
 folia-supported: true
