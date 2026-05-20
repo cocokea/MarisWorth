@@ -42,6 +42,12 @@ public final class MarisWorthExpansion extends PlaceholderExpansion {
             int position = parsePosition(params.substring("top_value_".length()));
             return plugin.topValue(position);
         }
+        if ("postion".equalsIgnoreCase(params)) {
+            return player == null ? "0" : String.valueOf(plugin.playerPosition(player));
+        }
+        if ("total".equalsIgnoreCase(params)) {
+            return plugin.playerTotal(player);
+        }
         return null;
     }
 

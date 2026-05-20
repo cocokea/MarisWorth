@@ -61,6 +61,8 @@ public final class MarisWorthPlugin extends JavaPlugin {
     private final ConcurrentMap<UUID, List<ItemStack>> pendingReturnedItems = new ConcurrentHashMap<>();
     private final Map<Integer, String> topNameCache = new ConcurrentHashMap<>();
     private final Map<Integer, String> topValueCache = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> playerPositionCache = new ConcurrentHashMap<>();
+    private final Map<UUID, String> playerTotalCache = new ConcurrentHashMap<>();
     private Economy economy;
     private FileConfiguration sounds;
     private FileConfiguration messages;
@@ -74,7 +76,10 @@ public final class MarisWorthPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        ensureFiles();
+        
+        saveDefaultConfig();
+        MarisPluginStartup.bootstrap(this, "cocokea/MarisWorth");
+ensureFiles();
         reloadConfig();
         this.sounds = YamlConfiguration.loadConfiguration(getDataFolder().toPath().resolve("sounds.yml").toFile());
         this.messages = loadMessages();
@@ -112,6 +117,8 @@ public final class MarisWorthPlugin extends JavaPlugin {
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             preloadMultipliers(player.getUniqueId());
+            refreshPlayerPositionAsync(player.getUniqueId());
+            refreshPlayerTotalAsync(player.getUniqueId());
             schedulerAdapter.runLater(player, 1L, () -> updateInjectTopInventory(player));
         }
         refreshTopStatsAsync();
@@ -135,6 +142,8 @@ public final class MarisWorthPlugin extends JavaPlugin {
         pendingReturnedItems.clear();
         topNameCache.clear();
         topValueCache.clear();
+        playerPositionCache.clear();
+        playerTotalCache.clear();
     }
 
     public SellResult sellInventory(Player player, Inventory inventory) {
@@ -169,6 +178,8 @@ public final class MarisWorthPlugin extends JavaPlugin {
         }
         saveMultiplierState(player.getUniqueId(), states);
         flushSalesAsync(player.getUniqueId(), sales);
+        refreshPlayerPositionAsync(player.getUniqueId());
+        refreshPlayerTotalAsync(player.getUniqueId());
         refreshTopStatsAsync();
         returnLeftovers(player, leftovers);
         return new SellResult(total, rejectedBlacklisted);
@@ -441,14 +452,34 @@ public final class MarisWorthPlugin extends JavaPlugin {
         topInventoryStaticItemsCache.remove(playerId);
         creativeModeCache.remove(playerId);
         loreEnabledCache.remove(playerId);
+        playerPositionCache.remove(playerId);
+        playerTotalCache.remove(playerId);
     }
 
     public String topName(int position) {
-        return topNameCache.getOrDefault(Math.max(1, position), "");
+        return topNameCache.getOrDefault(Math.max(1, position), "---");
     }
 
     public String topValue(int position) {
-        return topValueCache.getOrDefault(Math.max(1, position), NumberFormatUtil.format(0D));
+        return topValueCache.getOrDefault(Math.max(1, position), "---");
+    }
+
+    public int playerPosition(OfflinePlayer player) {
+        if (player == null || player.getUniqueId() == null) {
+            return 0;
+        }
+        UUID playerId = player.getUniqueId();
+        refreshPlayerPositionAsync(playerId);
+        return playerPositionCache.getOrDefault(playerId, 0);
+    }
+
+    public String playerTotal(OfflinePlayer player) {
+        if (player == null || player.getUniqueId() == null) {
+            return "---";
+        }
+        UUID playerId = player.getUniqueId();
+        refreshPlayerTotalAsync(playerId);
+        return playerTotalCache.getOrDefault(playerId, "---");
     }
 
     public void reloadRuntime() {
@@ -468,6 +499,8 @@ public final class MarisWorthPlugin extends JavaPlugin {
         pendingReturnedItems.clear();
         topNameCache.clear();
         topValueCache.clear();
+        playerPositionCache.clear();
+        playerTotalCache.clear();
         refreshTopStatsAsync();
     }
 
@@ -627,11 +660,47 @@ public final class MarisWorthPlugin extends JavaPlugin {
                 getLogger().warning("Failed to refresh top name cache at position " + currentPosition + ": " + exception.getMessage());
                 return null;
             });
-            databaseManager.topValueAsync(currentPosition).thenAccept(value -> topValueCache.put(currentPosition, NumberFormatUtil.format(value)))
+            databaseManager.topValueAsync(currentPosition).thenAccept(value -> topValueCache.put(currentPosition, value > 0D ? NumberFormatUtil.format(value) : "---"))
                 .exceptionally(exception -> {
                     getLogger().warning("Failed to refresh top value cache at position " + currentPosition + ": " + exception.getMessage());
                     return null;
                 });
+        }
+    }
+
+    private void refreshPlayerPositionAsync(UUID playerId) {
+        if (databaseManager == null || playerId == null) {
+            return;
+        }
+        databaseManager.playerPositionAsync(playerId)
+            .thenAccept(position -> playerPositionCache.put(playerId, position))
+            .exceptionally(exception -> {
+                getLogger().warning("Failed to refresh player position cache for " + playerId + ": " + exception.getMessage());
+                return null;
+            });
+    }
+
+    private void refreshPlayerTotalAsync(UUID playerId) {
+        if (databaseManager == null || playerId == null) {
+            return;
+        }
+        databaseManager.playerTotalAsync(playerId)
+            .thenAccept(total -> playerTotalCache.put(playerId, total > 0D ? NumberFormatUtil.format(total) : "---"))
+            .exceptionally(exception -> {
+                getLogger().warning("Failed to refresh player total cache for " + playerId + ": " + exception.getMessage());
+                return null;
+            });
+    }
+
+    private String resolveTopPlayerName(String uuid) {
+        if (uuid == null || uuid.isBlank()) {
+            return "---";
+        }
+        try {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+            return offlinePlayer.getName() == null || offlinePlayer.getName().isBlank() ? "---" : offlinePlayer.getName();
+        } catch (IllegalArgumentException exception) {
+            return "---";
         }
     }
 
@@ -698,18 +767,6 @@ public final class MarisWorthPlugin extends JavaPlugin {
 
     private FileConfiguration loadMessages() {
         return YamlConfiguration.loadConfiguration(getDataFolder().toPath().resolve("message").resolve("message_" + getConfig().getString("language", "en") + ".yml").toFile());
-    }
-
-    private String resolveTopPlayerName(String uuid) {
-        if (uuid == null || uuid.isBlank()) {
-            return "";
-        }
-        try {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-            return offlinePlayer.getName() == null ? uuid : offlinePlayer.getName();
-        } catch (IllegalArgumentException exception) {
-            return uuid;
-        }
     }
 
     private void refreshSellBlacklist() {

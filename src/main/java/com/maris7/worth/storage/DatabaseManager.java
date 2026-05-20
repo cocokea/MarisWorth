@@ -144,6 +144,22 @@ public final class DatabaseManager {
         return CompletableFuture.supplyAsync(() -> topValue(position), currentExecutor);
     }
 
+    public CompletableFuture<Integer> playerPositionAsync(UUID playerId) {
+        ExecutorService currentExecutor = activeExecutor();
+        if (currentExecutor == null) {
+            return CompletableFuture.completedFuture(0);
+        }
+        return CompletableFuture.supplyAsync(() -> playerPosition(playerId), currentExecutor);
+    }
+
+    public CompletableFuture<Double> playerTotalAsync(UUID playerId) {
+        ExecutorService currentExecutor = activeExecutor();
+        if (currentExecutor == null) {
+            return CompletableFuture.completedFuture(0D);
+        }
+        return CompletableFuture.supplyAsync(() -> playerTotal(playerId), currentExecutor);
+    }
+
 
     private ExecutorService activeExecutor() {
         return executor;
@@ -257,6 +273,48 @@ public final class DatabaseManager {
                 try (Connection connection = dataSource.getConnection();
                      PreparedStatement statement = connection.prepareStatement("SELECT total_earned FROM marisworth_player_stats ORDER BY total_earned DESC LIMIT 1 OFFSET ?")) {
                     statement.setInt(1, Math.max(0, position - 1));
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        return resultSet.next() ? resultSet.getDouble(1) : 0D;
+                    }
+                }
+            });
+        } catch (IllegalStateException exception) {
+            return 0D;
+        }
+    }
+
+    public int playerPosition(UUID playerId) {
+        if (playerId == null) {
+            return 0;
+        }
+        try {
+            return execute("load player position", () -> {
+                try (Connection connection = dataSource.getConnection();
+                     PreparedStatement statement = connection.prepareStatement(
+                         "SELECT ranked.position FROM (" +
+                             "SELECT player_uuid, ROW_NUMBER() OVER (ORDER BY total_earned DESC, player_uuid ASC) AS position " +
+                             "FROM marisworth_player_stats" +
+                         ") ranked WHERE ranked.player_uuid = ?")) {
+                    statement.setString(1, playerId.toString());
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        return resultSet.next() ? resultSet.getInt(1) : 0;
+                    }
+                }
+            });
+        } catch (IllegalStateException exception) {
+            return 0;
+        }
+    }
+
+    public double playerTotal(UUID playerId) {
+        if (playerId == null) {
+            return 0D;
+        }
+        try {
+            return execute("load player total", () -> {
+                try (Connection connection = dataSource.getConnection();
+                     PreparedStatement statement = connection.prepareStatement("SELECT total_earned FROM marisworth_player_stats WHERE player_uuid = ?")) {
+                    statement.setString(1, playerId.toString());
                     try (ResultSet resultSet = statement.executeQuery()) {
                         return resultSet.next() ? resultSet.getDouble(1) : 0D;
                     }

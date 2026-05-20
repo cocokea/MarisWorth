@@ -1,3 +1,5 @@
+update-checker: true
+
 language: en
 sell:
   close-delay-ticks: 3
